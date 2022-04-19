@@ -20,6 +20,12 @@ function NewTicketForm() {
       </form>
     </React.Fragment>
   );
+  function handleNewTicketFormSubmission(event) {
+    event.preventDefault();
+    console.log(event.target.name.value);
+    console.log(event.target.location.value);
+    console.log(event.target.issue.value);
+  }
 }
 
 export default NewTicketForm;
