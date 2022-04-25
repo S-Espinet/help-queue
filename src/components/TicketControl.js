@@ -36,17 +36,29 @@ console.log(props);
 
   handleAddingNewTicketToList = (newTicket) => {
     const { dispatch } = this.props;
-    const { id, names, location, issue } = newTicket;
+    //const { id, names, location, issue } = newTicket;
     const action = {
       type: 'ADD_TICKET',
-      id: id,
-      names: names,
-      location: location,
-      issue: issue,
+      ...newTicket
     };
     dispatch(action);
     this.setState({formVisibleOnPage: false});
   }
+
+
+  // handleAddingNewTicketToList = (newTicket) => {
+  //   const { dispatch } = this.props;
+  //   const { id, names, location, issue } = newTicket;
+  //   const action = {
+  //     type: 'ADD_TICKET',
+  //     id: id,
+  //     names: names,
+  //     location: location,
+  //     issue: issue,
+  //   };
+  //   dispatch(action);
+  //   this.setState({formVisibleOnPage: false});
+  // }
 
   handleChangingSelectedTicket = (id) => {
     const selectedTicket = this.props.mainTicketList[id];
@@ -72,13 +84,10 @@ console.log(props);
 
   handleEditingTicketInList = (ticketToEdit) => {
     const { dispatch } = this.props;
-    const { id, names, location, issue } = ticketToEdit;
+    //const { id, names, location, issue } = ticketToEdit;
     const action = {
       type: 'ADD_TICKET',
-      id: id,
-      names: names,
-      location: location,
-      issue: issue,
+      ...ticketToEdit
     };
     dispatch(action);
     this.setState({
@@ -86,6 +95,24 @@ console.log(props);
         selectedTicket: null
       });
   }
+
+
+  // handleEditingTicketInList = (ticketToEdit) => {
+  //   const { dispatch } = this.props;
+  //   const { id, names, location, issue } = ticketToEdit;
+  //   const action = {
+  //     type: 'ADD_TICKET',
+  //     id: id,
+  //     names: names,
+  //     location: location,
+  //     issue: issue,
+  //   };
+  //   dispatch(action);
+  //   this.setState({
+  //       editing: false,
+  //       selectedTicket: null
+  //     });
+  // }
 
   render() {
     let currentlyVisibleState = null;
