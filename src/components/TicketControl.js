@@ -5,6 +5,7 @@ import TicketList from './TicketList';
 import TicketDetail from './TicketDetail';
 import EditTicketForm from './EditTicketForm';
 import PropTypes from 'prop-types';
+import * as a from './../actions';
 
 class TicketControl extends React.Component {
 
@@ -27,9 +28,7 @@ console.log(props);
       });
     } else {
       const { dispatch } = this.props;
-      const action = {
-        type: 'TOGGLE_FORM'
-      }
+      const action = a.toggleForm();
       dispatch(action);
       //this.setState(prevState => ({
         //formVisibleOnPage: !prevState.formVisibleOnPage
@@ -54,18 +53,9 @@ console.log(props);
 
   handleAddingNewTicketToList = (newTicket) => {
     const { dispatch } = this.props;
-    const { id, names, location, issue } = newTicket;
-    const action = {
-      type: 'ADD_TICKET',
-      id: id,
-      names: names,
-      location: location,
-      issue: issue,
-    };
+    const action = a.addTicket(newTicket);
     dispatch(action);
-    const action2 = {
-      type: 'TOGGLE_FORM'
-    }
+    const action2 = a.toggleForm();
     dispatch(action2);
     //this.setState({formVisibleOnPage: false});
   }
@@ -77,10 +67,7 @@ console.log(props);
 
   handleDeletingTicket = (id) => {
     const { dispatch } = this.props;
-    const action = {
-      type: 'DELETE_TICKET',
-      id: id
-    };
+    const action = a.deleteTicket(id);
     dispatch(action);
     this.setState({
       selectedTicket: null
@@ -92,29 +79,11 @@ console.log(props);
     this.setState({editing: true});
   }
 
-  handleEditingTicketInList = (ticketToEdit) => {
-    const { dispatch } = this.props;
-    const action = {
-      type: 'ADD_TICKET',
-      ...ticketToEdit
-    };
-    dispatch(action);
-    this.setState({
-        editing: false,
-        selectedTicket: null
-      });
-  }
-
-
   // handleEditingTicketInList = (ticketToEdit) => {
   //   const { dispatch } = this.props;
-  //   const { id, names, location, issue } = ticketToEdit;
   //   const action = {
   //     type: 'ADD_TICKET',
-  //     id: id,
-  //     names: names,
-  //     location: location,
-  //     issue: issue,
+  //     ...ticketToEdit
   //   };
   //   dispatch(action);
   //   this.setState({
@@ -122,6 +91,17 @@ console.log(props);
   //       selectedTicket: null
   //     });
   // }
+
+
+  handleEditingTicketInList = (ticketToEdit) => {
+    const { dispatch } = this.props;
+    const action = a.addTicket(ticketToEdit);
+    dispatch(action);
+    this.setState({
+        editing: false,
+        selectedTicket: null
+      });
+  }
 
   render() {
     let currentlyVisibleState = null;
