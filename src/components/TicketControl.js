@@ -10,11 +10,9 @@ class TicketControl extends React.Component {
 
   constructor(props) {
     super(props);
-
 console.log(props);
-
     this.state = {
-      formVisibleOnPage: false,
+      //formVisibleOnPage: false, - Redux handles formVisible on page now
       selectedTicket: null,
       editing: false
     };
@@ -23,42 +21,54 @@ console.log(props);
   handleClick = () => {
     if (this.state.selectedTicket != null) {
       this.setState({
-        formVisibleOnPage: false,
+        //formVisibleOnPage: false,
         selectedTicket: null,
         editing: false
       });
     } else {
-      this.setState(prevState => ({
-        formVisibleOnPage: !prevState.formVisibleOnPage
-      }));
+      const { dispatch } = this.props;
+      const action = {
+        type: 'TOGGLE_FORM'
+      }
+      dispatch(action);
+      //this.setState(prevState => ({
+        //formVisibleOnPage: !prevState.formVisibleOnPage
+      //}));
     }
   }
 
-  handleAddingNewTicketToList = (newTicket) => {
-    const { dispatch } = this.props;
-    //const { id, names, location, issue } = newTicket;
-    const action = {
-      type: 'ADD_TICKET',
-      ...newTicket
-    };
-    dispatch(action);
-    this.setState({formVisibleOnPage: false});
-  }
-
-
   // handleAddingNewTicketToList = (newTicket) => {
   //   const { dispatch } = this.props;
-  //   const { id, names, location, issue } = newTicket;
   //   const action = {
   //     type: 'ADD_TICKET',
-  //     id: id,
-  //     names: names,
-  //     location: location,
-  //     issue: issue,
+  //     ...newTicket
   //   };
   //   dispatch(action);
-  //   this.setState({formVisibleOnPage: false});
+  //   const action2 = {
+  //    type: 'TOGGLE_FORM'
+  //    }
+  //    dispatch(action2);
+  //   //this.setState({formVisibleOnPage: false});
   // }
+
+
+  handleAddingNewTicketToList = (newTicket) => {
+    const { dispatch } = this.props;
+    const { id, names, location, issue } = newTicket;
+    const action = {
+      type: 'ADD_TICKET',
+      id: id,
+      names: names,
+      location: location,
+      issue: issue,
+    };
+    dispatch(action);
+    const action2 = {
+      type: 'TOGGLE_FORM'
+    }
+    dispatch(action2);
+    //this.setState({formVisibleOnPage: false});
+  }
 
   handleChangingSelectedTicket = (id) => {
     const selectedTicket = this.props.mainTicketList[id];
@@ -84,7 +94,6 @@ console.log(props);
 
   handleEditingTicketInList = (ticketToEdit) => {
     const { dispatch } = this.props;
-    //const { id, names, location, issue } = ticketToEdit;
     const action = {
       type: 'ADD_TICKET',
       ...ticketToEdit
@@ -128,7 +137,7 @@ console.log(props);
         onClickingDelete = {this.handleDeletingTicket} 
         onClickingEdit = {this.handleEditClick} />
       buttonText = "Return to Ticket List"
-    } else if (this.state.formVisibleOnPage) {
+    } else if (this.props.formVisibleOnPage) {
       currentlyVisibleState = <NewTicketForm onNewTicketCreation={this.handleAddingNewTicketToList} />;
       buttonText = "Return to Ticket List";
     } else if (this.state.selectedTicket != null) {
@@ -148,12 +157,14 @@ console.log(props);
 }
 
 TicketControl.propTypes = {
-  mainTicketList: PropTypes.object
+  mainTicketList: PropTypes.object,
+  formVisibleOnPage: PropTypes.bool
 }
 
 const mapStateToProps = state => {
   return {
-    mainTicketList: state
+    mainTicketList: state.mainTicketList,
+    formVisibleOnPage: state.formVisibleOnPage
   }
 }
 
