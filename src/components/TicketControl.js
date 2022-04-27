@@ -6,6 +6,7 @@ import TicketDetail from './TicketDetail';
 import EditTicketForm from './EditTicketForm';
 import PropTypes from 'prop-types';
 import * as a from './../actions';
+import Moment from 'moment';
 
 class TicketControl extends React.Component {
 
