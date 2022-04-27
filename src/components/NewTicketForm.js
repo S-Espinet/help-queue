@@ -2,8 +2,20 @@ import React from "react";
 import { v4 } from 'uuid';
 import PropTypes from "prop-types";
 import ReusableForm from "./ReusableForm";
+import Moment from 'moment';
 
 function NewTicketForm(props) {
+  function handleNewTicketFormSubmission(event) {
+    event.preventDefault();
+    props.onNewTicketCreation({
+      names: event.target.names.value, 
+      location: event.target.location.value, 
+      issue: event.target.issue.value, 
+      id: v4(),
+      timeOpen: new Moment(),
+      formattedWaitTime: new Moment().fromNow(true)
+    });
+  }
   return (
     <React.Fragment>
       <ReusableForm
@@ -11,15 +23,6 @@ function NewTicketForm(props) {
         buttonText="Help!" />
     </React.Fragment>
   );
-  function handleNewTicketFormSubmission(event) {
-    event.preventDefault();
-    props.onNewTicketCreation({
-      names: event.target.names.value, 
-      location: event.target.location.value, 
-      issue: event.target.issue.value, 
-      id: v4()
-    });
-  }
 }
 NewTicketForm.propTypes = {
   onNewTicketCreation: PropTypes.func
