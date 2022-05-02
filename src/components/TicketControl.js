@@ -6,6 +6,7 @@ import TicketDetail from './TicketDetail';
 import EditTicketForm from './EditTicketForm';
 import PropTypes from 'prop-types';
 import * as a from './../actions';
+import { withFirestore } from 'react-redux-firebase';
 
 class TicketControl extends React.Component {
 
@@ -13,7 +14,6 @@ class TicketControl extends React.Component {
     super(props);
 console.log(props);
     this.state = {
-      //formVisibleOnPage: false, - Redux handles formVisible on page now
       selectedTicket: null,
       editing: false
     };
@@ -30,19 +30,18 @@ console.log(props);
     clearInterval(this.waitTimeUpdateTimer);
   }
 
-  updateTicketElapsedWaitTime = () => {
-    const { dispatch } = this.props;
-    Object.values(this.props.mainTicketList).forEach(ticket => {
-      const newFormattedWaitTime = ticket.timeOpen.fromNow(true);
-      const action = a.updateTime(ticket.id, newFormattedWaitTime);
-      dispatch(action);
-    });
-  }
+  // updateTicketElapsedWaitTime = () => {
+  //   const { dispatch } = this.props;
+  //   Object.values(this.props.mainTicketList).forEach(ticket => {
+  //     const newFormattedWaitTime = ticket.timeOpen.fromNow(true);
+  //     const action = a.updateTime(ticket.id, newFormattedWaitTime);
+  //     dispatch(action);
+  //   });
+  // }
 
   handleClick = () => {
     if (this.state.selectedTicket != null) {
       this.setState({
-        //formVisibleOnPage: false,
         selectedTicket: null,
         editing: false
       });
@@ -50,48 +49,31 @@ console.log(props);
       const { dispatch } = this.props;
       const action = a.toggleForm();
       dispatch(action);
-      //this.setState(prevState => ({
-        //formVisibleOnPage: !prevState.formVisibleOnPage
-      //}));
     }
   }
 
-  // handleAddingNewTicketToList = (newTicket) => {
-  //   const { dispatch } = this.props;
-  //   const action = {
-  //     type: 'ADD_TICKET',
-  //     ...newTicket
-  //   };
-  //   dispatch(action);
-  //   const action2 = {
-  //    type: 'TOGGLE_FORM'
-  //    }
-  //    dispatch(action2);
-  //   //this.setState({formVisibleOnPage: false});
-  // }
 
-
-  handleAddingNewTicketToList = (newTicket) => {
+  handleAddingNewTicketToList = () => {
     const { dispatch } = this.props;
-    const action = a.addTicket(newTicket);
+    const action = a.toggleForm();
     dispatch(action);
-    const action2 = a.toggleForm();
-    dispatch(action2);
-    //this.setState({formVisibleOnPage: false});
   }
 
   handleChangingSelectedTicket = (id) => {
-    const selectedTicket = this.props.mainTicketList[id];
-    this.setState({selectedTicket: selectedTicket});
+    this.props.firestore.get({collection: 'tickets', doc: id}).then((ticket) => {
+      const firestoreTicket = {
+        names: ticket.get("names"),
+        location: ticket.get("location"),
+        issue: ticket.get("issue"),
+        id: ticket.id
+      }
+      this.setState({selectedTicket: firestoreTicket });
+    });
   }
 
   handleDeletingTicket = (id) => {
-    const { dispatch } = this.props;
-    const action = a.deleteTicket(id);
-    dispatch(action);
-    this.setState({
-      selectedTicket: null
-    });
+    this.props.firestore.delete({collection: 'tickets', doc: id});
+    this.setState({selectedTicket: null});
   }
 
   handleEditClick = () => {
@@ -99,29 +81,16 @@ console.log(props);
     this.setState({editing: true});
   }
 
+
   // handleEditingTicketInList = (ticketToEdit) => {
   //   const { dispatch } = this.props;
-  //   const action = {
-  //     type: 'ADD_TICKET',
-  //     ...ticketToEdit
-  //   };
+  //   const action = a.addTicket(ticketToEdit);
   //   dispatch(action);
   //   this.setState({
   //       editing: false,
   //       selectedTicket: null
   //     });
   // }
-
-
-  handleEditingTicketInList = (ticketToEdit) => {
-    const { dispatch } = this.props;
-    const action = a.addTicket(ticketToEdit);
-    dispatch(action);
-    this.setState({
-        editing: false,
-        selectedTicket: null
-      });
-  }
 
   render() {
     let currentlyVisibleState = null;
@@ -144,7 +113,7 @@ console.log(props);
       currentlyVisibleState = <TicketDetail ticket = {this.state.selectedTicket}/>
       buttonText= "Return to Ticket List";
     } else {
-      currentlyVisibleState = <TicketList ticketList={this.props.mainTicketList} onTicketSelection={this.handleChangingSelectedTicket} />
+      currentlyVisibleState = <TicketList onTicketSelection={this.handleChangingSelectedTicket} />
       buttonText = "Add Ticket";
     }
     return (
@@ -157,17 +126,15 @@ console.log(props);
 }
 
 TicketControl.propTypes = {
-  mainTicketList: PropTypes.object,
   formVisibleOnPage: PropTypes.bool
 }
 
 const mapStateToProps = state => {
   return {
-    mainTicketList: state.mainTicketList,
     formVisibleOnPage: state.formVisibleOnPage
   }
 }
 
 TicketControl = connect(mapStateToProps)(TicketControl);
 
-export default TicketControl;
+export default withFirestore(TicketControl);
