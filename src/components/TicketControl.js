@@ -82,15 +82,12 @@ console.log(props);
   }
 
 
-  // handleEditingTicketInList = (ticketToEdit) => {
-  //   const { dispatch } = this.props;
-  //   const action = a.addTicket(ticketToEdit);
-  //   dispatch(action);
-  //   this.setState({
-  //       editing: false,
-  //       selectedTicket: null
-  //     });
-  // }
+  handleEditingTicketInList = () => {
+    this.setState({
+      editing: false,
+      selectedTicket: null
+    });
+  }
 
   render() {
     let currentlyVisibleState = null;

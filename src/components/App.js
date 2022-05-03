@@ -1,13 +1,18 @@
 import React from "react";
 import Header from "./Header";
 import TicketControl from "./TicketControl";
+import Signin from "./Signin";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App(){
-  return ( 
-    <React.Fragment>
+  return (
+    <Router>
       <Header />
-      <TicketControl />
-    </React.Fragment>
+      <Routes>
+        <Route path="/signin" element={<Signin />} />
+        <Route exact path="/" element={<TicketControl />} />
+      </Routes>
+    </Router>
   );
 }
 
