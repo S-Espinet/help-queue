@@ -24,15 +24,22 @@ const rrfProps = {
   createFirestoreInstance
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <ReactReduxFirebaseProvider{...rrfProps}>
-        <App />
-      </ReactReduxFirebaseProvider>
-    </Provider>
-  </React.StrictMode>
+// const root = ReactDOM.createRoot(document.getElementById('root'));
+// root.render(
+//     <Provider store={store}>
+//       <ReactReduxFirebaseProvider{...rrfProps}>
+//         <App />
+//       </ReactReduxFirebaseProvider>
+//     </Provider>
+// );
+
+ReactDOM.render(
+  <Provider store={store}>
+    <ReactReduxFirebaseProvider {...rrfProps}>
+      <App />
+    </ReactReduxFirebaseProvider>
+  </Provider>,
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
